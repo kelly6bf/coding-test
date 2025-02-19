@@ -12,6 +12,7 @@ class Solution {
     private void recursive(int n, int k, int start, List<List<Integer>> answer, List<Integer> combination) {
         if (combination.size() == k) {
             answer.add(new ArrayList<>(combination));
+            return;
         }
 
         for (int i = start; i <= n; i++) {
