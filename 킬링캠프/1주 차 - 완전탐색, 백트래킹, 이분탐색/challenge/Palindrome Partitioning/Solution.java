@@ -2,37 +2,35 @@ import java.util.*;
 
 class Solution {
     public List<List<String>> partition(String s) {
+        List<List<String>> result = new ArrayList<>();
         String[] sArr = new String[s.length()];
         for (int i = 0; i < s.length(); i++) {
             sArr[i] = String.valueOf(s.charAt(i));
         }
-        List<List<String>> result = new ArrayList<>();
-
-        backTracking(sArr, 0, result, new ArrayList<>());
+        backTracking(sArr, result, 0, new ArrayList<>());
         return result;
     }
 
-    private void backTracking(String[] sArr, int step, List<List<String>> result, List<String> strs) {
-        if (step == sArr.length) {
-            if (isPalindromes(strs)) {
-                result.add(new ArrayList<>(strs));
+    private void backTracking(String[] sArr, List<List<String>> result, int start, List<String> subStr) {
+        if (start == sArr.length) {
+            if (isPalindrome(subStr)) {
+                result.add(new ArrayList<>(subStr));
             }
             return;
         }
 
-        String str = "";
-        for (int i = step; i < sArr.length; i++) {
-            str += sArr[i];
-            strs.add(str);
-            backTracking(sArr, i + 1, result, strs);
-
-            strs.remove(strs.size() - 1);
+        String s = "";
+        for (int i = start; i < sArr.length; i++) {
+            s += sArr[i];
+            subStr.add(s);
+            backTracking(sArr, result, i + 1, subStr);
+            subStr.remove(subStr.size() - 1);
         }
     }
 
-    private boolean isPalindromes(List<String> strs) {
-        for (String s : strs) {
-            if (!s.equals(new StringBuilder(s).reverse().toString())) {
+    private boolean isPalindrome(List<String> subStr) {
+        for (String str : subStr) {
+            if (!str.equals(new StringBuilder(str).reverse().toString())) {
                 return false;
             }
         }
