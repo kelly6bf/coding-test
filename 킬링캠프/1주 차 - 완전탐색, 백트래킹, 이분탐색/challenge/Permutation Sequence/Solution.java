@@ -1,27 +1,26 @@
 import java.util.*;
 
 class Solution {
-
     public String getPermutation(int n, int k) {
-        List<Integer> numbers = new ArrayList<>();
+        List<Integer> nums = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
-            numbers.add(i);
+            nums.add(i);
         }
-
-        return backTracking(n, k - 1, 1, numbers, "");
+        
+        return backTracking(n, k - 1, nums, new StringBuilder());
     }
 
-    private String backTracking(int n, int k, int count, List<Integer> numbers, String permutation) {
-        if (numbers.isEmpty()) {
-            return permutation;
+    private String backTracking(int n, int k, List<Integer> nums, StringBuilder sb) {
+        if (nums.size() == 1) {
+            return sb.append(nums.get(0)).toString();
         }
 
-        int offset = calculateFactorial(n - count);
-        int target = k / offset;
-        List<Integer> nextNumbers = new ArrayList<>(numbers);
-        nextNumbers.remove(target);
+        int seqCount = calculateFactorial(n - 1);
+        int target = k / seqCount;
 
-        return backTracking(n, k % offset, count += 1, nextNumbers, permutation += String.valueOf(numbers.get(target)));
+        sb.append(nums.get(target));
+        nums.remove(target);
+        return backTracking(n - 1, k % seqCount, nums, sb);
     }
 
     private int calculateFactorial(int n) {
