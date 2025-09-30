@@ -6,7 +6,7 @@ class Solution:
         if (left > right):
             return -1
         
-        mid = left + ((right - left) // 2)
+        mid = (left + right) // 2
         if (nums[mid] == target):
             return mid
         
