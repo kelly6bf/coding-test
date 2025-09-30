@@ -1,23 +1,22 @@
 class Solution:
     def partition(self, s: str) -> List[List[str]]:
-        answer = []
-        self.back_tracking(s, answer, [], 0)
+        result = []
+        self.recursive(list(s), 0, [], result)
+        return result
 
-        return answer
-    
-    def back_tracking(self, s, answer, temp, start):
-        if (start == len(s)):
-            answer.append(temp[:])
-            return
-
-        for i in range(start, len(s)):
-            target = s[start:i + 1]
-            if (not self.is_palindrome(target)):
+    def recursive(self, sArr, start, temp, result):
+        if (start == len(sArr)):
+            result.append(list(temp))
+        
+        s = ''
+        for i in range(start, len(sArr)):
+            s += sArr[i]
+            if (not self.isPalindrome(s)):
                 continue
             
-            temp.append(target)
-            self.back_tracking(s, answer, temp, i + 1)
+            temp.append(s)
+            self.recursive(sArr, i + 1, temp, result)
             temp.pop()
-    
-    def is_palindrome(self, target):
-        return target == target[::-1]
+        
+    def isPalindrome(self, s):
+        return s == s[::-1]
