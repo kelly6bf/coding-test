@@ -1,21 +1,17 @@
-answer = 0
-
 def solution(k, dungeons):
-    global answer
-    backTracking(k, dungeons, [False for _ in dungeons], 0)
+    visited = [False for _ in dungeons]
+    return recursive(k, dungeons, 0, visited)
 
-    return answer
-
-def backTracking(k, dungeons, visited, count):
-    global answer
-
-    answer = max(answer, count)
-
-    for i in range(len(dungeons)):
-        target = dungeons[i]
-        if (visited[i] or k < target[0]):
+def recursive(k, dungeons, count, visited):
+    max_count = count
+    
+    for i in range(0, len(dungeons)):
+        minimumPoint, usePoint = dungeons[i]
+        if (visited[i] or k < minimumPoint):
             continue
         
         visited[i] = True
-        backTracking(k - target[1], dungeons, visited, count + 1)
+        max_count = max(max_count, recursive(k - usePoint, dungeons, count + 1, visited))
         visited[i] = False
+    
+    return max_count
