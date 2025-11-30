@@ -1,17 +1,18 @@
 class Solution:
     def combine(self, n: int, k: int) -> List[List[int]]:
-        nums = [i for i in range(1, n + 1)]
-        ans = []
-        self.recursive(nums, k, ans, [], 0)
+        # 메서드
+        def backTracking(result, temp, start):
+            if len(temp) == k:
+                result.append(temp[:])
+                return
+            
+            for i in range(start, n + 1):
+                temp.append(i)
+                backTracking(result, temp, i + 1)
+                temp.pop()
 
-        return ans
-    
-    def recursive(self, nums, k, ans, temp, start):
-        if (len(temp) == k):
-            ans.append(temp[:])
-            return
+        # 메인 로직
+        result = []
+        backTracking(result, [], 1)
 
-        for i in range(start, len(nums)):
-            temp.append(nums[i])
-            self.recursive(nums, k, ans, temp, i + 1)
-            temp.pop()
+        return result
