@@ -1,19 +1,21 @@
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
-        ans = []
-        self.recursive(nums, ans, [])
+        # 메서드
+        def recursive(temp, result):
+            if len(temp) == len(nums):
+                result.append(temp[:])
+                return
+            
+            for i in (nums):
+                if i in temp:
+                    continue
 
-        return ans
-    
-    def recursive(self, nums, ans, temp):
-        if (len(temp) == len(nums)):
-            ans.append(temp[:])
-            return
+                temp.append(i)
+                recursive(temp, result)
+                temp.pop()
+        
+        # 메인 로직
+        result = []
+        recursive([], result)
 
-        for i in nums:
-            if (i in temp):
-                continue
-
-            temp.append(i)
-            self.recursive(nums, ans, temp)
-            temp.pop()
+        return result
