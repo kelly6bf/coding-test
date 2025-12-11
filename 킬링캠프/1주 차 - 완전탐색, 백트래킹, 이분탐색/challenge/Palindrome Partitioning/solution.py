@@ -1,22 +1,25 @@
 class Solution:
     def partition(self, s: str) -> List[List[str]]:
-        result = []
-        self.recursive(list(s), 0, [], result)
-        return result
+        # 메서드
+        def backTracking(answer, candi, s):
+            if s == "":
+                if isPalindrome(candi):
+                    answer.append(candi[:])
+                return
 
-    def recursive(self, sArr, start, temp, result):
-        if (start == len(sArr)):
-            result.append(list(temp))
-        
-        s = ''
-        for i in range(start, len(sArr)):
-            s += sArr[i]
-            if (not self.isPalindrome(s)):
-                continue
+            for i in range(len(s)):
+                candi.append(s[:i + 1])
+                backTracking(answer, candi, s[i + 1:])
+                candi.pop()
             
-            temp.append(s)
-            self.recursive(sArr, i + 1, temp, result)
-            temp.pop()
-        
-    def isPalindrome(self, s):
-        return s == s[::-1]
+        def isPalindrome(candi):
+            for c in candi:
+                if c != c[::-1]:
+                    return False
+            
+            return True
+
+        # 메인 로직
+        answer = []
+        backTracking(answer, [], s)
+        return answer
