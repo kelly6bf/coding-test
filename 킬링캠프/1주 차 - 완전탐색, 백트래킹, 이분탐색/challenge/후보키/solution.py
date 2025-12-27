@@ -1,40 +1,45 @@
 def solution(relation):
-    candidate_keys = []
-    row_count = len(relation)
-    col_count = len(relation[0])
+    # 전역 데이터
+    colCount = len(relation[0])
+    colIndex = [i for i in range(colCount)]
+    candiKeys = []
 
-    for i in range(1, col_count + 1):
-        combis = []
-        get_combis(col_count, combis, i, 0, [])
-        
-        for combi in combis:
-            is_minimality = True
-            for candi in candidate_keys:
-                if (set(candi).issubset(set(combi))):
-                    is_minimality = False
-                    break
-            
-            if (not is_minimality):
-                continue
-            
-            row_set = set()
-            for row in relation:
-                row_str = ""
-                for key in combi:
-                    row_str += row[key] + " "
-                row_set.add(row_str)
-            
-            if (len(row_set) == row_count):
-                candidate_keys.append(combi)
+    # 메서드
+    def getCandiCombi(keyCount, result, temp, start):
+        if len(temp) == keyCount:
+            result.append(set(temp))
+            return
+
+        for i in range(start, colCount):
+            temp.append(colIndex[i])
+            getCandiCombi(keyCount, result, temp, i + 1)
+            temp.pop()
     
-    return len(candidate_keys)
+    def isMinimum(combi):
+        for candi in candiKeys:
+            if candi.issubset(combi):
+                return False
+        
+        return True
 
-def get_combis(col_count, combis, max, start, temp):
-    if (len(temp) == max):
-        combis.append(temp[:])
-        return
+    def isUnique(combi):
+        checkSet = set()
+        for r in relation:
+            checkSet.add(tuple(r[c] for c in combi))
+        
+        return len(checkSet) == len(relation)
 
-    for key in range(start, col_count):
-        temp.append(key)
-        get_combis(col_count, combis, max, key + 1, temp)
-        temp.pop()
+    # 메인 로직
+    for keyCount in range(1, colCount + 1):
+        # 키 조합 구하기
+        candiCombi = []
+        getCandiCombi(keyCount, candiCombi, [], 0)
+
+        for combi in candiCombi:
+            # 최소성 & 유일성 검사
+            if not isMinimum(combi) or not isUnique(combi):
+                continue
+
+            candiKeys.append(combi)
+    
+    return len(candiKeys)
