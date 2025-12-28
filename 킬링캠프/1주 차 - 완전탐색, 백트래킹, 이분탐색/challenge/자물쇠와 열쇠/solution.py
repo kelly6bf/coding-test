@@ -1,51 +1,55 @@
 def solution(key, lock):
-    M = len(key)    # 키 크기
-    N = len(lock)   # 자물쇠 크기
+    # 전역 데이터
+    M = len(key)
+    N = len(lock)
 
-    for row_offset in range(M - 1, -N, -1):
-        for col_offset in range(M - 1, -N, -1):
+    # 메서드
+    def match(keyRowOffset, keyColOffset, rot):
+        targetKey = calculateCurrentKey(rot)
+
+        for lockRow in range(N):
+            keyRow = lockRow + keyRowOffset
+            
+            for lockCol in range(N):
+                keyCol = lockCol + keyColOffset
+
+                if not isSafe(keyRow, keyCol):
+                    if lock[lockRow][lockCol] == 0:
+                        return False
+                    else:
+                        continue
+
+                if (lock[lockRow][lockCol] == 1 and targetKey[keyRow][keyCol] == 1) or (lock[lockRow][lockCol] == 0 and targetKey[keyRow][keyCol] != 1):
+                    return False
+        
+        return True
+
+    def calculateCurrentKey(rot):
+        if (rot == 0):
+            return key
+
+        curKey = [[0 for _ in range(M)] for _ in range(M)]
+        for row in range(M):
+            for col in range(M):
+                if (key[row][col] == 0):
+                    continue
+                if (rot == 1):
+                    curKey[col][M - row - 1] = 1
+                elif (rot == 2):
+                    curKey[M - row - 1][M - col - 1] = 1
+                else:
+                    curKey[M - col - 1][row] = 1
+        
+        return curKey
+    
+    def isSafe(keyRow, keyCol):
+        return keyRow >= 0 and keyRow < M and keyCol >= 0 and keyCol < M
+
+    # 메인 로직
+    for keyRowOffset in range(M - 1, -N, -1):
+        for keyColOffset in range(M - 1, -N, -1):
             for rot in range(4):
-                if (match(key, lock, row_offset, col_offset, rot)):
+                if match(keyRowOffset, keyColOffset, rot):
                     return True
     
     return False
-
-def match(key, lock, row_offset, col_offset, rot):
-    N = len(lock)
-    M = len(key)
-    current_key = calculate_current_key(key, rot)
-
-    for lock_row in range(N):
-        key_row = lock_row + row_offset
-        for lock_col in range(N):
-            key_col = lock_col + col_offset
-
-            if (key_row < 0 or key_row >= M or key_col < 0 or key_col >= M):
-                if (lock[lock_row][lock_col] == 0):
-                    return False
-                else:
-                    continue
-            
-            if ((lock[lock_row][lock_col] == 1 and current_key[key_row][key_col] == 1) or lock[lock_row][lock_col] == 0 and current_key[key_row][key_col] != 1):
-                return False
-    
-    return True
-
-def calculate_current_key(key, rot):
-    if (rot == 0):
-        return key
-
-    M = len(key)
-    current_key = [[0 for _ in range(M)] for _ in range(M)]
-    for row in range(M):
-        for col in range(M):
-            if (key[row][col] != 1):
-                continue
-            if (rot == 1):
-                current_key[col][M - row - 1] = 1
-            elif (rot == 2):
-                current_key[M - row - 1][M - col - 1] = 1
-            else:
-                current_key[M - col - 1][row] = 1
-    
-    return current_key
